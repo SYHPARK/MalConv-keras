@@ -1,0 +1,9 @@
+gen_adversarial2.py
+gen_adversarial.py
+__init__.py
+log
+malconv.py
+predict.py
+preprocess.py
+train.py
+utils.py

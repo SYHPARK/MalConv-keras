@@ -36,7 +36,13 @@ def train(model, max_len=200000, batch_size=64, verbose=True, epochs=100, save_p
                           monitor="val_acc", 
                           save_best_only=save_best, 
                           save_weights_only=False)
-    
+    print("[*] x_train length: ", len(x_train))
+    print("[*] y_train length: ", len(y_train))
+    print("[*] x_test length: ", len(x_test))
+    print("[*] y_test length: ", len(y_test))
+    validation_data=utils.data_generator(x_test, y_test, max_len, batch_size)
+    print("[*] validation_data: ", validation_data)
+
     history = model.fit_generator(
         utils.data_generator(x_train, y_train, max_len, batch_size, shuffle=True),
         steps_per_epoch=len(x_train)//batch_size + 1,
@@ -55,7 +61,7 @@ if __name__ == '__main__':
     if args.limit > 0:
         utils.limit_gpu_memory(args.limit)
     
-    
+    print("[*] Flag0")
     # prepare model
     if args.resume:
         model = load_model(args.model_path)
@@ -63,7 +69,7 @@ if __name__ == '__main__':
         model = Malconv(args.max_len, args.win_size)
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
     
-    
+    print("[*] Flag1")    
     # prepare data
     # preprocess is handled in utils.data_generator
     df = pd.read_csv(args.csv, header=None)
@@ -71,7 +77,9 @@ if __name__ == '__main__':
     x_train, x_test, y_train, y_test = utils.train_test_split(data, label, args.val_size)
     print('Train on %d data, test on %d data' % (len(x_train), len(x_test)))
     
+    print("[*] Flag2")
     history = train(model, args.max_len, args.batch_size, args.verbose, args.epochs, args.save_path, args.save_best)
+    print("[*] Flag3")
     with open(join(args.save_path, 'history.pkl'), 'wb') as f:
         pickle.dump(history.history, f)
 
